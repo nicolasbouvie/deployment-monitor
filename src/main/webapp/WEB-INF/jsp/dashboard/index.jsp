@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <html>
   
   <head>
@@ -9,7 +10,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
         <!-- Site Properities -->
-        <title>Deployment Monitor</title>
+        <title>Deployment Monitor - Dashboard</title>
         <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/semantic-ui-0.19.3/css/semantic.min.css">
         <style>
@@ -36,6 +37,9 @@
                 border-color: #fcd419;
                 color: darkgoldenrod;
             }
+            .ui.form.loading:after {
+                z-index: 2;
+            }
         </style>
     </head>
 
@@ -51,7 +55,7 @@
                              <i class="dashboard icon"></i> Dashboard
                         </a>
                         <div class="right menu">
-                            <a class="item" href="newSRD.html">
+                            <a class="item" href="${linkTo[SolicitacaoReintegrateController].add}">
                                  <i class="text file outline icon"></i> Nova Solicitação
                             </a>
                             <a class="item" id="btnInfo">
@@ -62,8 +66,7 @@
                     <div class="ui sub menu">
                          <a class="active item">Tudo</a>
                          <c:forEach items="${sms}" var="sm">
-                             <c:url value="/filter/sm/${sm.id}" var="filter"/>
-                             <a class="item" href="${filter}">${sm.nome}</a>
+                             <a class="item" href="${linkTo[SolicitacaoMudancaController].filter(sm.id)}">${sm.nome}</a>
                          </c:forEach>
                     </div>
                 </div>
@@ -226,15 +229,34 @@
                             </table>
                         </div>
                     </div>
+                    
+                    <!-- Tabela de Atividades -->
                     <div class="column">
                         <h5 class="ui top attached header">
-                            Próximo Deploy
-                            <div class="ui teal label" style="float: right;">16h</div>
+                            Atividades
                         </h5>
                         <div class="ui segment attached">
-                            <table class="ui middle aligned compact basic mini sortable table" id="table">
-                                <thead></thead>
-                                <tbody></tbody>
+                            <table class="ui middle aligned compact basic mini sortable table" id="tableActivities">
+                                <thead>
+                                    <tr>
+                                        <th>Descrição</th>
+                                        <th>Branch</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>D22323: Uma demanda de teste</td>
+                                        <td>https://github.com/viniciusknob/deployment-monitor</td>
+                                    </tr>
+                                    <tr>
+                                        <td>QC323: Um bug encontrado</td>
+                                        <td>https://github.com/nicolasbouvie/deployment-monitor</td>
+                                    </tr>
+                                    <tr>
+                                        <td>INC123459: Um incidente em produção</td>
+                                        <td>https://github.com/gelias/dojo-vraptor4</td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -251,11 +273,11 @@
                      <i class="info icon"></i>
                 </div>
                 <div class="right">
-                     <h3 class="ui header">Solicitação de Reintegrate para Deploy (SRD)</h3>
+                    <h3 class="ui header">Solicitação de Reintegrate para Deploy (SRD)</h3>
                     <p>Antigo "Descritor de Reintegrate". Uma SRD é mais simples e também mais rápida de criar.</p>
-                     <h3 class="ui header">Pacote</h3>
+                    <h3 class="ui header">Pacote</h3>
                     <p>Conjunto de SRDs de uma mesma aplicação que serão implantadas juntas.</p>
-                     <h3 class="ui header">Status</h3>
+                    <h3 class="ui header">Status</h3>
                     <p>Estado da SRD, pode assumir:</p>
                     <ol class="ui list">
                         <li>Pendente de Reintegrate</li>
@@ -278,7 +300,7 @@
             $('#modalInfo')
                 .modal('attach events', '#btnInfo', 'show')
                 .modal('setting', 'transition', 'vertical flip');
-            $('#tableLatestSolicitations').tablesort();
+            $('#tableLatestSolicitations,#tableActivities').tablesort();
         </script>
   </body>
 </html>
